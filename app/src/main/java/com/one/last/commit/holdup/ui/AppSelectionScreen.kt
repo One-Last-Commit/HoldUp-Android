@@ -1,4 +1,4 @@
-package com.one.last.commit.holdup
+package com.one.last.commit.holdup.ui
 
 import android.content.pm.PackageManager
 import androidx.compose.foundation.Image
@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import com.one.last.commit.holdup.data.repository.DataStoreRepository
 import kotlinx.coroutines.launch
 
 @Composable

@@ -8,6 +8,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.one.last.commit.holdup.ui.AppSelectionScreen
+import com.one.last.commit.holdup.ui.PermissionScreen
+import com.one.last.commit.holdup.ui.SplashScreen
 
 sealed class Screen(val route: String) {
     data object Splash : Screen("splash")

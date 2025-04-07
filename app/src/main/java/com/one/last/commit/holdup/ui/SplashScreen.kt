@@ -1,4 +1,4 @@
-package com.one.last.commit.holdup
+package com.one.last.commit.holdup.ui
 
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context

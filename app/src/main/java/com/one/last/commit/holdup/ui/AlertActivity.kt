@@ -1,4 +1,4 @@
-package com.one.last.commit.holdup
+package com.one.last.commit.holdup.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.one.last.commit.holdup.data.repository.DataStoreRepository
+import com.one.last.commit.holdup.service.AppMonitorService
 import com.one.last.commit.holdup.ui.theme.HoldUpTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

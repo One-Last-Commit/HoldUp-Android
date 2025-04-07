@@ -1,9 +1,11 @@
-package com.one.last.commit.holdup
+package com.one.last.commit.holdup.service
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import com.one.last.commit.holdup.data.repository.DataStoreRepository
+import com.one.last.commit.holdup.ui.AlertActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
