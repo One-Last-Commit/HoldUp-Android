@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HoldUp</string>
+    <string name="app_description">HoldUp is an app that helps you to keep your phone safe.</string>
 </resources>
