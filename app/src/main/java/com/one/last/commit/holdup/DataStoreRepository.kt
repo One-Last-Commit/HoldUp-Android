@@ -1,6 +1,7 @@
 package com.one.last.commit.holdup
 
 import android.content.Context
+import android.icu.util.Calendar
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -15,6 +16,7 @@ object DataStoreRepository {
 
     private val selectedAppsKey = stringSetPreferencesKey("selected_apps")
 
+    private val lastDateKey = { pkg: String -> intPreferencesKey("last_date_$pkg") }
     private val countKey = { pkg: String -> intPreferencesKey("count_$pkg") }
 
     fun getSelectedApps(context: Context): Flow<Set<String>> {
@@ -30,9 +32,17 @@ object DataStoreRepository {
     }
 
     suspend fun incrementUsage(context: Context, pkg: String) {
+        val today = getTodayAsInt()
+
         context.dataStore.edit { preferences ->
-            val count = preferences[countKey(pkg)] ?: 0
-            preferences[countKey(pkg)] = count + 1
+            val lastDate = preferences[lastDateKey(pkg)] ?: -1
+            if (lastDate != today) {
+                preferences[countKey(pkg)] = 1
+            } else {
+                val count = preferences[countKey(pkg)] ?: 0
+                preferences[countKey(pkg)] = count + 1
+            }
+            preferences[lastDateKey(pkg)] = today
         }
     }
 
@@ -40,5 +50,13 @@ object DataStoreRepository {
         return context.dataStore.data.map { prefs ->
             prefs[countKey(pkg)] ?: 0
         }
+    }
+
+    private fun getTodayAsInt(): Int {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        return year * 10000 + month * 100 + day
     }
 }
