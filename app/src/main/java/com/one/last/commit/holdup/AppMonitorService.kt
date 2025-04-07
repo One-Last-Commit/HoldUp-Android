@@ -22,7 +22,7 @@ class AppMonitorService : AccessibilityService() {
         val now = System.currentTimeMillis()
         val ignoreUntil = ignoreMap[currentPkg] ?: 0L
 
-        if (lastDetectedPackage == currentPkg && now - lastDetectionTime < 1000) {
+        if (lastDetectedPackage == currentPkg && now - lastDetectionTime < 3000) {
             Log.d("AppMonitorService", "Duplicate event ignored for $currentPkg")
             return
         }

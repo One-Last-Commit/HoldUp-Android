@@ -49,7 +49,7 @@ fun HoldUpTheme(
     }
 
     MaterialTheme(
-      colorScheme = colorScheme,
+      colorScheme = DarkColorScheme,
       typography = Typography,
       content = content
     )
