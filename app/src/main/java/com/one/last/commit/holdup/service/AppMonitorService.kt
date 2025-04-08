@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class AppMonitorService : AccessibilityService() {
     private var selectedApps: Set<String> = emptySet()
-    private var ignoreMap: MutableMap<String, Long> = mutableMapOf()
+    private var ignoredApps: MutableSet<String> = mutableSetOf()
 
     private var lastDetectedPackage: String? = null
     private var lastDetectionTime: Long = 0
@@ -22,18 +22,21 @@ class AppMonitorService : AccessibilityService() {
         val currentPkg = event.packageName?.toString() ?: return
 
         val now = System.currentTimeMillis()
-        val ignoreUntil = ignoreMap[currentPkg] ?: 0L
+
+        // 앱 종료 후 다른 앱으로 전환되었을 때 ignoredApps에서 제거
+        if (lastDetectedPackage != null && lastDetectedPackage != currentPkg) {
+            ignoredApps.remove(lastDetectedPackage)
+        }
 
         if (lastDetectedPackage == currentPkg && now - lastDetectionTime < 3000) {
-            Log.d("AppMonitorService", "Duplicate event ignored for $currentPkg")
             return
         }
 
         lastDetectedPackage = currentPkg
         lastDetectionTime = now
 
-        if (now < ignoreUntil) {
-            Log.d("AppMonitorService", "Ignoring $currentPkg until $ignoreUntil")
+        if (ignoredApps.contains(currentPkg)) {
+            Log.d("AppMonitorService", "App $currentPkg is currently ignored.")
             return
         }
 
@@ -50,24 +53,24 @@ class AppMonitorService : AccessibilityService() {
         }
     }
 
-    override fun onInterrupt() {}
+    override fun onInterrupt() { }
 
     companion object {
         private var instance: AppMonitorService? = null
 
-        fun ignoreAppFor(packageName: String, millis: Long) {
-            instance?.ignoreMap?.put(packageName, System.currentTimeMillis() + millis)
+        const val SERVICE_ID = "com.one.last.commit.holdup/.service.AppMonitorService"
+
+        fun ignoreAppUntilClosed(packageName: String) {
+            instance?.ignoredApps?.add(packageName)
         }
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         instance = this
-        Log.d("AppMonitorService", "Service connected")
 
         CoroutineScope(Dispatchers.Default).launch {
             DataStoreRepository.getSelectedApps(this@AppMonitorService).collect { apps ->
-                Log.d("AppMonitorService", "Selected apps: $apps")
                 selectedApps = apps
             }
         }

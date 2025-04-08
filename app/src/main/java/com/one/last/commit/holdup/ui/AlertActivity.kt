@@ -56,7 +56,7 @@ class AlertActivity : ComponentActivity() {
                     appName = appName,
                     count = count,
                     onConfirm = {
-                        AppMonitorService.ignoreAppFor(pkgName, 60000)
+                        AppMonitorService.ignoreAppUntilClosed(pkgName)
                         val launchIntent = packageManager.getLaunchIntentForPackage(pkgName)
                         if (launchIntent != null) {
                             startActivity(launchIntent)

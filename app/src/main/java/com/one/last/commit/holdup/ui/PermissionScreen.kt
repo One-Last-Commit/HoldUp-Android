@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
+import android.util.Log
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -27,11 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.one.last.commit.holdup.service.AppMonitorService
 
 @Composable
 fun PermissionScreen(
@@ -39,18 +40,20 @@ fun PermissionScreen(
     navigateToAppSelection: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
 
     val isAccessibilityEnabled = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        isAccessibilityEnabled.value = isAccessibilityServiceEnabled(context, "com.one.last.commit.holdup/.AppMonitorService")
+        isAccessibilityEnabled.value = isAccessibilityServiceEnabled(context, AppMonitorService.SERVICE_ID)
     }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                isAccessibilityEnabled.value = isAccessibilityServiceEnabled(context, "com.one.last.commit.holdup/.AppMonitorService")
+                isAccessibilityEnabled.value = isAccessibilityServiceEnabled(context, AppMonitorService.SERVICE_ID)
+                Log.d("PermissionScreen", "Accessibility Service Enabled: ${isAccessibilityEnabled.value}")
+
                 if (isAccessibilityEnabled.value) {
                     navigateToAppSelection()
                 }
